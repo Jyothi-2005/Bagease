@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BagEase — From Doorstep to Departure</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F5F0E8; --bg2: #EDE6D6; --forest: #2D5016; --forest-mid: #3D6B20;
+    --forest-light: #4E8829; --amber: #D97706; --amber-light: #F59E0B;
+    --amber-pale: #FEF3C7; --charcoal: #1C1C1C; --warm-gray: #6B6355;
+    --white: #FFFFFF; --card-bg: #FFFDF8; --border: rgba(45,80,22,0.12);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--charcoal); overflow-x: hidden; }
+  nav {
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 5%; background: rgba(245,240,232,0.92);
+    backdrop-filter: blur(14px); border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 700; color: var(--charcoal); letter-spacing: -0.5px; }
+  .nav-logo span { color: var(--amber); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { color: var(--warm-gray); text-decoration: none; font-size: 0.9rem; font-weight: 400; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--forest); }
+  .nav-right { display: flex; gap: 0.75rem; align-items: center; }
+  .nav-login { color: var(--forest); text-decoration: none; font-size: 0.9rem; font-weight: 500; padding: 0.55rem 1.25rem; border: 1.5px solid var(--forest); border-radius: 50px; transition: all 0.2s; }
+  .nav-login:hover { background: var(--forest); color: var(--white); }
+  .nav-cta { background: var(--amber); color: var(--white); padding: 0.55rem 1.4rem; border-radius: 50px; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
+  .nav-cta:hover { background: var(--amber-light); transform: translateY(-1px); }
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; padding-top: 80px; background: var(--bg); position: relative; overflow: hidden; }
+  .hero-left { background: var(--forest); padding: 5rem 5% 5rem 6%; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; z-index: 1; }
+  .hero-left::before { content: ''; position: absolute; bottom: -15%; left: -10%; width: 500px; height: 500px; border-radius: 50%; border: 60px solid rgba(255,255,255,0.04); pointer-events: none; }
+  .hero-left::after { content: ''; position: absolute; top: -20%; right: -15%; width: 380px; height: 380px; border-radius: 50%; border: 50px solid rgba(255,255,255,0.05); pointer-events: none; }
+  .hero-dot-grid { position: absolute; top: 0; right: 0; bottom: 0; width: 45%; background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px); background-size: 22px 22px; pointer-events: none; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; padding: 0.45rem 1.1rem; font-size: 0.72rem; font-weight: 600; color: var(--amber-light); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2rem; width: fit-content; animation: fadeSlideUp 0.7s ease both; }
+  .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber-light); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+  @keyframes fadeSlideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  .hero-h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(3rem, 4.5vw, 5rem); font-weight: 700; line-height: 1.0; letter-spacing: -2px; color: var(--white); margin-bottom: 1.5rem; animation: fadeSlideUp 0.7s 0.1s ease both; }
+  .hero-h1 em { font-style: normal; color: var(--amber-light); }
+  .hero-sub { font-size: 1.05rem; font-weight: 300; line-height: 1.85; color: rgba(255,255,255,0.7); max-width: 420px; margin-bottom: 2.5rem; animation: fadeSlideUp 0.7s 0.2s ease both; }
+  .hero-actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; animation: fadeSlideUp 0.7s 0.3s ease both; }
+  .btn-primary { background: var(--amber); color: var(--white); padding: 0.9rem 2.2rem; border-radius: 50px; text-decoration: none; font-size: 1rem; font-weight: 500; transition: all 0.25s; display: inline-block; }
+  .btn-primary:hover { background: var(--amber-light); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(217,119,6,0.35); }
+  .btn-ghost-light { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.9rem; font-weight: 400; display: inline-flex; align-items: center; gap: 0.4rem; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 2px; transition: all 0.2s; }
+  .btn-ghost-light:hover { color: var(--amber-light); border-color: var(--amber-light); }
+  .hero-stats { display: flex; gap: 2rem; margin-top: 3.5rem; padding-top: 2.5rem; border-top: 1px solid rgba(255,255,255,0.12); animation: fadeSlideUp 0.7s 0.4s ease both; }
+  .hero-stat { display: flex; flex-direction: column; }
+  .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700; color: var(--amber-light); line-height: 1; }
+  .stat-num sup { font-size: 1rem; vertical-align: super; }
+  .stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.55); margin-top: 4px; }
+  .hero-right { position: relative; overflow: hidden; min-height: 600px; }
+  .hero-right-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center center; display: block; }
+  .hero-right-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(45,80,22,0.5) 0%, transparent 45%), linear-gradient(to top, rgba(28,28,28,0.75) 0%, transparent 55%); pointer-events: none; }
+  .marquee-wrap { background: var(--forest); padding: 0.9rem 0; overflow: hidden; }
+  .marquee-track { display: flex; gap: 3rem; animation: marquee 22s linear infinite; white-space: nowrap; }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+  .marquee-item { font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 1.5px; display: flex; align-items: center; gap: 0.75rem; }
+  .marquee-item::before { content: '◆'; font-size: 0.55rem; color: var(--amber-light); }
+  section { padding: 6rem 5%; }
+  .section-eyebrow { font-size: 0.78rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--amber); margin-bottom: 0.75rem; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; letter-spacing: -1px; margin-bottom: 1rem; color: var(--charcoal); }
+  .section-body { font-size: 1rem; font-weight: 300; line-height: 1.8; color: var(--warm-gray); max-width: 520px; }
+  .how { background: var(--bg2); }
+  .how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; margin-top: 4rem; }
+  .steps { display: flex; flex-direction: column; }
+  .step { display: flex; gap: 1.5rem; align-items: flex-start; padding: 1.75rem 0; border-bottom: 1px solid var(--border); }
+  .step:last-child { border-bottom: none; }
+  .step-num { min-width: 44px; height: 44px; border-radius: 12px; background: var(--forest); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: var(--white); flex-shrink: 0; }
+  .step-title { font-size: 1rem; font-weight: 500; margin-bottom: 0.35rem; color: var(--charcoal); }
+  .step-desc { font-size: 0.875rem; color: var(--warm-gray); line-height: 1.7; }
+  .how-visual { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 2rem; box-shadow: 0 8px 40px rgba(45,80,22,0.08); }
+  .tracking-card { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; margin-bottom: 0.75rem; }
+  .tracking-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .tracking-label { font-size: 0.75rem; color: var(--warm-gray); text-transform: uppercase; letter-spacing: 1px; }
+  .status-pill { background: rgba(34,197,94,0.12); color: #16A34A; border: 1px solid rgba(34,197,94,0.3); padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.72rem; font-weight: 500; animation: blink 2s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.6} }
+  .progress-bar { height: 5px; background: var(--bg2); border-radius: 50px; margin-bottom: 0.5rem; }
+  .progress-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, var(--forest) 0%, var(--amber) 100%); }
+  .route-stops { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.25rem; }
+  .route-stop { display: flex; align-items: center; gap: 0.85rem; }
+  .stop-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .stop-dot.done { background: var(--forest); }
+  .stop-dot.active { background: var(--amber); box-shadow: 0 0 0 3px rgba(217,119,6,0.2); }
+  .stop-dot.pending { background: rgba(28,28,28,0.15); }
+  .stop-text { font-size: 0.85rem; color: var(--warm-gray); }
+  .stop-text strong { color: var(--charcoal); font-weight: 500; }
+  .stop-time { margin-left: auto; font-size: 0.75rem; color: var(--warm-gray); }
+  .features-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-bottom: 4rem; }
+  .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .feature-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; transition: all 0.25s; position: relative; overflow: hidden; }
+  .feature-card:hover { border-color: rgba(45,80,22,0.3); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(45,80,22,0.1); }
+  .feature-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--forest), var(--amber)); opacity: 0; transition: opacity 0.25s; }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon { width: 52px; height: 52px; border-radius: 14px; background: rgba(45,80,22,0.08); border: 1px solid rgba(45,80,22,0.15); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.25rem; }
+  .feature-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--charcoal); }
+  .feature-desc { font-size: 0.875rem; color: var(--warm-gray); line-height: 1.7; }
+  .feature-tag { display: inline-block; margin-top: 1rem; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--forest); background: rgba(45,80,22,0.08); padding: 0.3rem 0.75rem; border-radius: 50px; }
+  .why { background: var(--forest); color: var(--white); }
+  .why .section-eyebrow { color: var(--amber-light); }
+  .why .section-title { color: var(--white); }
+  .why .section-body { color: rgba(255,255,255,0.65); }
+  .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 4rem; }
+  .why-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 2rem; transition: all 0.25s; }
+  .why-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px); }
+  .why-num { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 700; color: rgba(255,255,255,0.15); line-height: 1; margin-bottom: 0.75rem; }
+  .why-title { font-size: 1.05rem; font-weight: 500; color: var(--white); margin-bottom: 0.5rem; }
+  .why-desc { font-size: 0.875rem; color: rgba(255,255,255,0.6); line-height: 1.7; }
+  .cta-band { background: var(--amber); padding: 5rem 5%; text-align: center; position: relative; overflow: hidden; }
+  .cta-band::before { content: 'BAGEASE'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'Cormorant Garamond', serif; font-size: 18vw; font-weight: 700; color: rgba(255,255,255,0.08); white-space: nowrap; pointer-events: none; }
+  .cta-band h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4.5vw, 3.5rem); font-weight: 700; color: var(--white); letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 1.25rem; position: relative; }
+  .cta-band p { font-size: 1.05rem; font-weight: 300; color: rgba(255,255,255,0.85); max-width: 480px; margin: 0 auto 2.5rem; line-height: 1.7; position: relative; }
+  .btn-white { background: var(--white); color: var(--amber); padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-size: 1rem; font-weight: 600; display: inline-block; transition: all 0.25s; position: relative; }
+  .btn-white:hover { background: var(--charcoal); color: var(--white); transform: translateY(-2px); }
+  footer { background: var(--charcoal); color: var(--white); padding: 4rem 5% 2.5rem; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; }
+  .footer-brand .nav-logo { font-size: 1.8rem; display: block; margin-bottom: 1rem; color: var(--white); }
+  .footer-brand p { font-size: 0.875rem; color: rgba(255,255,255,0.45); line-height: 1.7; max-width: 260px; }
+  .footer-col h4 { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--white); margin-bottom: 1.25rem; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+  .footer-col a { font-size: 0.875rem; color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--amber-light); }
+  .footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.8rem; color: rgba(255,255,255,0.3); }
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 4rem 5%; }
+    .hero-right { min-height: 420px; }
+    .how-grid, .features-intro { grid-template-columns: 1fr; gap: 3rem; }
+    .why-grid { grid-template-columns: 1fr 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+    .features-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .why-grid, .footer-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 1.5rem; }
+    .footer-bottom { flex-direction: column; gap: 0.75rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">Bag<span>Ease</span></span>
+  <ul class="nav-links">
+    <li><a href="#how">How it Works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="login.html" class="nav-login">Log In</a>
+    <a href="booking.html" class="nav-cta">Book a Pickup</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-dot-grid"></div>
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Smart Luggage Logistics — India's First
+    </div>
+    <h1 class="hero-h1">From<br><em>Doorstep</em><br>to Departure.</h1>
+    <p class="hero-sub">BagEase transports your luggage from home straight to the railway station — so you travel hands-free, stress-free, and arrive refreshed.</p>
+    <div class="hero-actions">
+      <a href="booking.html" class="btn-primary">Book a Pickup →</a>
+      <a href="#how" class="btn-ghost-light">See how it works ↓</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="stat-num">50<sup>K+</sup></div>
+        <div class="stat-label">Happy travellers</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num">200<sup>+</sup></div>
+        <div class="stat-label">Railway stations</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num">99<sup>%</sup></div>
+        <div class="stat-label">On-time delivery</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <img class="hero-right-img" src="luggage-hero.png" alt="Luggage safely stored at BagEase station counter" />
+    <div class="hero-right-overlay"></div>
+  </div>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">GPS Real-Time Tracking</span>
+    <span class="marquee-item">AI Route Optimisation</span>
+    <span class="marquee-item">IoT Baggage Monitoring</span>
+    <span class="marquee-item">Secure Digital Payments</span>
+    <span class="marquee-item">Doorstep Collection</span>
+    <span class="marquee-item">Station Delivery</span>
+    <span class="marquee-item">GPS Real-Time Tracking</span>
+    <span class="marquee-item">AI Route Optimisation</span>
+    <span class="marquee-item">IoT Baggage Monitoring</span>
+    <span class="marquee-item">Secure Digital Payments</span>
+    <span class="marquee-item">Doorstep Collection</span>
+    <span class="marquee-item">Station Delivery</span>
+  </div>
+</div>
+
+<section class="how" id="how">
+  <div class="section-eyebrow">The Process</div>
+  <div class="how-grid">
+    <div>
+      <div class="section-title">Effortless in<br>four steps.</div>
+      <p class="section-body" style="margin-bottom:2.5rem">We've engineered every touchpoint so your journey begins the moment you leave home.</p>
+      <div class="steps">
+        <div class="step"><div class="step-num">01</div><div><div class="step-title">Schedule your pickup</div><div class="step-desc">Book online or via our app. Choose a convenient time window and our agent arrives at your doorstep.</div></div></div>
+        <div class="step"><div class="step-num">02</div><div><div class="step-title">IoT tags applied</div><div class="step-desc">Each bag gets a smart IoT sensor — giving you tamper alerts, temperature logs, and live location in real time.</div></div></div>
+        <div class="step"><div class="step-num">03</div><div><div class="step-title">AI-optimised route</div><div class="step-desc">Our AI calculates the fastest, safest route to your station — adapting dynamically to traffic and rail schedules.</div></div></div>
+        <div class="step"><div class="step-num">04</div><div><div class="step-title">Collect at the station</div><div class="step-desc">Your bags wait at a secure, staffed BagEase counter at your departure station, verified by digital ID.</div></div></div>
+      </div>
+    </div>
+    <div class="how-visual">
+      <div class="tracking-card">
+        <div class="tracking-header">
+          <span class="tracking-label">Bag #BE-2841</span>
+          <span class="status-pill">● En Route</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:62%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--warm-gray)"><span>Picked up</span><span>62% to station</span><span>ETA 14 min</span></div>
+        <div class="route-stops">
+          <div class="route-stop"><div class="stop-dot done"></div><div class="stop-text"><strong>12 Sunrise Apartments</strong></div><span class="stop-time">08:30</span></div>
+          <div class="route-stop"><div class="stop-dot active"></div><div class="stop-text"><strong>MG Road Junction</strong> · in transit</div><span class="stop-time">~08:52</span></div>
+          <div class="route-stop"><div class="stop-dot pending"></div><div class="stop-text">Central Railway Station</div><span class="stop-time">09:10</span></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+        <div class="tracking-card" style="margin:0;padding:1rem"><div style="font-size:0.72rem;color:var(--warm-gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.4rem">Temperature</div><div style="font-size:1.4rem;font-weight:700;color:var(--amber)">22°C</div><div style="font-size:0.72rem;color:var(--warm-gray)">Compartment stable</div></div>
+        <div class="tracking-card" style="margin:0;padding:1rem"><div style="font-size:0.72rem;color:var(--warm-gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.4rem">Tamper</div><div style="font-size:1.4rem;font-weight:700;color:#16A34A">Secure</div><div style="font-size:0.72rem;color:var(--warm-gray)">No alerts triggered</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="features-intro">
+    <div><div class="section-eyebrow">Technology</div><div class="section-title">Built on the<br>future of travel.</div></div>
+    <p class="section-body">BagEase combines four cutting-edge technologies into a seamless platform — so your luggage is always where it should be, exactly when it needs to be.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feature-icon">🛰️</div><div class="feature-title">GPS Real-Time Tracking</div><div class="feature-desc">Watch your bags move on a live map from the moment they're picked up to the second they reach the station counter. Precision tracking with sub-50m accuracy.</div><span class="feature-tag">Live Location</span></div>
+    <div class="feature-card"><div class="feature-icon">🤖</div><div class="feature-title">AI Route Optimisation</div><div class="feature-desc">Machine learning models analyse traffic, railway timetables, and peak demand in real time to always find the fastest, most reliable delivery route.</div><span class="feature-tag">Smart Logistics</span></div>
+    <div class="feature-card"><div class="feature-icon">🔒</div><div class="feature-title">Secure Digital Payments</div><div class="feature-desc">End-to-end encrypted transactions via UPI, cards, and wallets. Instant booking confirmations, automated receipts, and zero hidden charges.</div><span class="feature-tag">Encrypted Checkout</span></div>
+    <div class="feature-card"><div class="feature-icon">📦</div><div class="feature-title">IoT Baggage Monitoring</div><div class="feature-desc">Smart sensors monitor handling conditions, detect tampering, log temperature, and push instant alerts to your phone.</div><span class="feature-tag">Sensor Network</span></div>
+  </div>
+</section>
+
+<section class="why" id="why">
+  <div class="section-eyebrow">Why BagEase</div>
+  <div class="section-title">Travel the way it<br>was meant to be.</div>
+  <p class="section-body">Millions of Indian railway passengers carry heavy luggage every day. We built BagEase to change that permanently.</p>
+  <div class="why-grid">
+    <div class="why-card"><div class="why-num">01</div><div class="why-title">Total Peace of Mind</div><div class="why-desc">Real-time alerts, tamper-proof IoT seals, and a dedicated support team mean your belongings are never out of sight.</div></div>
+    <div class="why-card"><div class="why-num">02</div><div class="why-title">Hands-Free Travel</div><div class="why-desc">No more dragging suitcases through auto-rickshaws, crowded platforms, or wrestling overhead racks. Walk light, travel free.</div></div>
+    <div class="why-card"><div class="why-num">03</div><div class="why-title">Tech-Driven Reliability</div><div class="why-desc">Our AI guarantees your luggage beats your train — or you get a full refund. 99% on-time delivery across 200+ stations.</div></div>
+  </div>
+</section>
+
+<div class="cta-band" id="cta">
+  <h2>Your bags go first.<br>You enjoy the journey.</h2>
+  <p>Join over 50,000 travellers who've discovered the smarter way to take the train.</p>
+  <a href="booking.html" class="btn-white">Book Your First Pickup →</a>
+</div>
+
+<footer id="contact">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="nav-logo">Bag<span>Ease</span></span>
+      <p>From Doorstep to Departure — India's first tech-powered luggage logistics service for railway travellers.</p>
+    </div>
+    <div class="footer-col"><h4>Service</h4><ul><li><a href="booking.html">Book a Pickup</a></li><li><a href="#">Track Baggage</a></li><li><a href="#">Station List</a></li><li><a href="#">Pricing</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="#">About Us</a></li><li><a href="#">Careers</a></li><li><a href="#">Press Kit</a></li><li><a href="#">Blog</a></li></ul></div>
+    <div class="footer-col"><h4>Account</h4><ul><li><a href="login.html">Log In</a></li><li><a href="register.html">Register</a></li><li><a href="#">Help Centre</a></li><li><a href="#">Contact Us</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 BagEase Technologies Pvt. Ltd. All rights reserved.</span>
+    <span>Made with care for Indian rail travellers 🇮🇳</span>
+  </div>
+</footer>
+
+</body>
+</html>

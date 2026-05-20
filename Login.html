@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log In — BagEase</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F5F0E8;
+    --bg2: #EDE6D6;
+    --forest: #2D5016;
+    --forest-mid: #3D6B20;
+    --forest-light: #4E8829;
+    --amber: #D97706;
+    --amber-light: #F59E0B;
+    --amber-pale: #FEF3C7;
+    --charcoal: #1C1C1C;
+    --warm-gray: #6B6355;
+    --white: #FFFFFF;
+    --card-bg: #FFFDF8;
+    --border: rgba(45,80,22,0.12);
+    --input-border: rgba(45,80,22,0.2);
+  }
+  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--charcoal); min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* NAV */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 5%; border-bottom: 1px solid var(--border); background: var(--card-bg); }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: var(--charcoal); text-decoration: none; letter-spacing: -0.5px; }
+  .nav-logo span { color: var(--amber); }
+  .nav-back { font-size: 0.88rem; color: var(--warm-gray); text-decoration: none; display: flex; align-items: center; gap: 0.4rem; transition: color 0.2s; }
+  .nav-back:hover { color: var(--forest); }
+
+  /* LAYOUT */
+  .auth-wrapper { flex: 1; display: grid; grid-template-columns: 1fr 1fr; min-height: calc(100vh - 65px); }
+
+  /* LEFT PANEL */
+  .auth-left {
+    background: var(--forest);
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 4rem 5%;
+    position: relative; overflow: hidden;
+  }
+  .auth-left::before {
+    content: '';
+    position: absolute; top: -20%; right: -20%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(217,119,6,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .auth-left::after {
+    content: '';
+    position: absolute; bottom: -15%; left: -10%;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(78,136,41,0.3) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .panel-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--amber-light); margin-bottom: 1.5rem; position: relative; z-index: 1; }
+  .panel-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 3.5vw, 3.2rem); font-weight: 700; color: var(--white); line-height: 1.15; letter-spacing: -1px; margin-bottom: 1.5rem; position: relative; z-index: 1; }
+  .panel-body { font-size: 1rem; font-weight: 300; line-height: 1.8; color: rgba(255,255,255,0.65); max-width: 380px; margin-bottom: 3rem; position: relative; z-index: 1; }
+  .panel-perks { list-style: none; display: flex; flex-direction: column; gap: 1rem; position: relative; z-index: 1; }
+  .panel-perks li { display: flex; align-items: center; gap: 0.85rem; font-size: 0.9rem; color: rgba(255,255,255,0.8); font-weight: 400; }
+  .perk-icon { width: 34px; height: 34px; border-radius: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+
+  /* RIGHT PANEL */
+  .auth-right { display: flex; align-items: center; justify-content: center; padding: 3rem 5%; background: var(--bg); }
+  .auth-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 2.75rem; width: 100%; max-width: 440px; box-shadow: 0 8px 40px rgba(45,80,22,0.08); }
+
+  .auth-card-header { margin-bottom: 2rem; }
+  .auth-card-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--charcoal); letter-spacing: -0.75px; margin-bottom: 0.4rem; }
+  .auth-card-sub { font-size: 0.9rem; color: var(--warm-gray); font-weight: 300; }
+  .auth-card-sub a { color: var(--forest); text-decoration: none; font-weight: 500; }
+  .auth-card-sub a:hover { color: var(--amber); }
+
+  /* FORM */
+  .form-group { margin-bottom: 1.25rem; }
+  label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--charcoal); margin-bottom: 0.5rem; letter-spacing: 0.3px; }
+  input[type="email"], input[type="password"], input[type="text"], input[type="tel"], input[type="date"], select {
+    width: 100%; padding: 0.85rem 1.1rem; border-radius: 12px;
+    border: 1.5px solid var(--input-border);
+    background: var(--bg); color: var(--charcoal);
+    font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 400;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+  }
+  input:focus, select:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(45,80,22,0.08); }
+  input::placeholder { color: rgba(107,99,85,0.5); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .form-options { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+  .checkbox-wrap { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; }
+  .checkbox-wrap input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--forest); cursor: pointer; }
+  .checkbox-label { font-size: 0.85rem; color: var(--warm-gray); }
+  .forgot-link { font-size: 0.85rem; color: var(--forest); text-decoration: none; font-weight: 500; }
+  .forgot-link:hover { color: var(--amber); }
+
+  .btn-submit { width: 100%; padding: 1rem; border-radius: 50px; border: none; background: var(--forest); color: var(--white); font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.25s; letter-spacing: 0.3px; }
+  .btn-submit:hover { background: var(--forest-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(45,80,22,0.25); }
+
+  .divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .divider span { font-size: 0.8rem; color: var(--warm-gray); white-space: nowrap; }
+
+  .social-btns { display: flex; flex-direction: column; gap: 0.75rem; }
+  .btn-social { width: 100%; padding: 0.8rem; border-radius: 12px; border: 1.5px solid var(--input-border); background: var(--card-bg); color: var(--charcoal); font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.75rem; transition: all 0.2s; }
+  .btn-social:hover { border-color: rgba(45,80,22,0.3); background: var(--bg); }
+
+  @media (max-width: 768px) {
+    .auth-wrapper { grid-template-columns: 1fr; }
+    .auth-left { display: none; }
+    .auth-right { padding: 2rem 1.25rem; align-items: flex-start; }
+    .auth-card { padding: 2rem 1.5rem; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Bag<span>Ease</span></a>
+  <a href="index.html" class="nav-back">← Back to Home</a>
+</nav>
+
+<div class="auth-wrapper">
+  <div class="auth-left">
+    <div class="panel-label">Welcome Back</div>
+    <h2 class="panel-title">Your journey<br>continues here.</h2>
+    <p class="panel-body">Sign in to manage your bookings, track your bags in real time, and access your travel history.</p>
+    <ul class="panel-perks">
+      <li><div class="perk-icon">📍</div>Live tracking dashboard</li>
+      <li><div class="perk-icon">📋</div>Booking history & receipts</li>
+      <li><div class="perk-icon">🔔</div>Real-time push alerts</li>
+      <li><div class="perk-icon">💳</div>Saved payment methods</li>
+    </ul>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <div class="auth-card-title">Log In</div>
+        <div class="auth-card-sub">New to BagEase? <a href="register.html">Create an account →</a></div>
+      </div>
+
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required>
+        </div>
+        <div class="form-options">
+          <label class="checkbox-wrap">
+            <input type="checkbox"> <span class="checkbox-label">Remember me</span>
+          </label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn-submit">Sign In →</button>
+      </form>
+
+      <div class="divider"><span>or continue with</span></div>
+
+      <div class="social-btns">
+        <button class="btn-social">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </button>
+        <button class="btn-social">
+          📱 Continue with Phone (OTP)
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function handleLogin(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.btn-submit');
+  btn.textContent = 'Signing in…';
+  btn.disabled = true;
+  setTimeout(() => { window.location.href = 'booking.html'; }, 1200);
+}
+</script>
+</body>
+</html>

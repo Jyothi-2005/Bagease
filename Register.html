@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account — BagEase</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F5F0E8; --bg2: #EDE6D6;
+    --forest: #2D5016; --forest-mid: #3D6B20; --forest-light: #4E8829;
+    --amber: #D97706; --amber-light: #F59E0B; --amber-pale: #FEF3C7;
+    --charcoal: #1C1C1C; --warm-gray: #6B6355; --white: #FFFFFF;
+    --card-bg: #FFFDF8; --border: rgba(45,80,22,0.12); --input-border: rgba(45,80,22,0.2);
+  }
+  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--charcoal); min-height: 100vh; display: flex; flex-direction: column; }
+
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 5%; border-bottom: 1px solid var(--border); background: var(--card-bg); }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: var(--charcoal); text-decoration: none; }
+  .nav-logo span { color: var(--amber); }
+  .nav-back { font-size: 0.88rem; color: var(--warm-gray); text-decoration: none; display: flex; align-items: center; gap: 0.4rem; transition: color 0.2s; }
+  .nav-back:hover { color: var(--forest); }
+
+  .auth-wrapper { flex: 1; display: grid; grid-template-columns: 1fr 1fr; min-height: calc(100vh - 65px); align-items: start; }
+
+  /* LEFT */
+  .auth-left { background: var(--amber); display: flex; flex-direction: column; justify-content: center; padding: 2.5rem 5%; position: sticky; top: 0; height: 100vh; overflow: hidden; }
+  .auth-left::before { content: ''; position: absolute; bottom: -15%; right: -15%; width: 350px; height: 350px; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); border-radius: 50%; }
+  .auth-left::after { content: ''; position: absolute; top: -10%; left: -10%; width: 250px; height: 250px; background: radial-gradient(circle, rgba(45,80,22,0.2) 0%, transparent 70%); border-radius: 50%; }
+  .panel-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.8); margin-bottom: 1.5rem; position: relative; z-index: 1; }
+  .panel-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3vw, 3rem); font-weight: 700; color: var(--white); line-height: 1.15; letter-spacing: -1px; margin-bottom: 1.5rem; position: relative; z-index: 1; }
+  .panel-body { font-size: 1rem; font-weight: 300; line-height: 1.8; color: rgba(255,255,255,0.8); max-width: 380px; margin-bottom: 2.5rem; position: relative; z-index: 1; }
+
+  .steps-mini { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; position: relative; z-index: 1; }
+  .steps-mini li { display: flex; align-items: flex-start; gap: 1rem; }
+  .step-badge { min-width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: var(--white); flex-shrink: 0; }
+  .step-mini-text strong { display: block; font-size: 0.9rem; font-weight: 600; color: var(--white); margin-bottom: 2px; }
+  .step-mini-text span { font-size: 0.82rem; color: rgba(255,255,255,0.7); }
+
+  .testimonial-card { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 1.5rem; margin-top: 2.5rem; position: relative; z-index: 1; }
+  .testimonial-text { font-size: 0.9rem; color: rgba(255,255,255,0.9); line-height: 1.7; font-style: italic; margin-bottom: 1rem; }
+  .testimonial-author { font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.8); }
+
+  /* RIGHT */
+  .auth-right { display: flex; align-items: flex-start; justify-content: center; padding: 3rem 5%; background: var(--bg); overflow-y: auto; }
+  .auth-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 2.75rem; width: 100%; max-width: 480px; box-shadow: 0 8px 40px rgba(45,80,22,0.08); }
+  .auth-card-header { margin-bottom: 2rem; }
+  .auth-card-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--charcoal); letter-spacing: -0.75px; margin-bottom: 0.4rem; }
+  .auth-card-sub { font-size: 0.9rem; color: var(--warm-gray); font-weight: 300; }
+  .auth-card-sub a { color: var(--forest); text-decoration: none; font-weight: 500; }
+  .auth-card-sub a:hover { color: var(--amber); }
+
+  .form-section { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--amber); margin: 1.75rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  .form-section:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+
+  .form-group { margin-bottom: 1.15rem; }
+  label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--charcoal); margin-bottom: 0.5rem; }
+  input[type="email"], input[type="password"], input[type="text"], input[type="tel"], input[type="date"], select {
+    width: 100%; padding: 0.85rem 1.1rem; border-radius: 12px; border: 1.5px solid var(--input-border);
+    background: var(--bg); color: var(--charcoal); font-family: 'Outfit', sans-serif; font-size: 0.95rem;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s; appearance: none;
+  }
+  input:focus, select:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(45,80,22,0.08); }
+  input::placeholder { color: rgba(107,99,85,0.5); }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6355' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .password-strength { height: 4px; border-radius: 50px; background: var(--bg2); margin-top: 0.5rem; overflow: hidden; }
+  .strength-fill { height: 100%; border-radius: 50px; width: 0%; transition: width 0.3s, background 0.3s; }
+  .strength-label { font-size: 0.75rem; color: var(--warm-gray); margin-top: 0.35rem; }
+
+  .terms-wrap { display: flex; align-items: flex-start; gap: 0.75rem; margin: 1.5rem 0; }
+  .terms-wrap input[type="checkbox"] { margin-top: 3px; accent-color: var(--forest); cursor: pointer; flex-shrink: 0; }
+  .terms-text { font-size: 0.85rem; color: var(--warm-gray); line-height: 1.6; }
+  .terms-text a { color: var(--forest); text-decoration: none; font-weight: 500; }
+  .terms-text a:hover { color: var(--amber); }
+
+  .btn-submit { width: 100%; padding: 1rem; border-radius: 50px; border: none; background: var(--forest); color: var(--white); font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.25s; }
+  .btn-submit:hover { background: var(--forest-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(45,80,22,0.25); }
+
+  .divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .divider span { font-size: 0.8rem; color: var(--warm-gray); white-space: nowrap; }
+  .btn-social { width: 100%; padding: 0.8rem; border-radius: 12px; border: 1.5px solid var(--input-border); background: var(--card-bg); color: var(--charcoal); font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.75rem; transition: all 0.2s; }
+  .btn-social:hover { border-color: rgba(45,80,22,0.3); background: var(--bg); }
+
+  @media (max-width: 768px) {
+    .auth-wrapper { grid-template-columns: 1fr; }
+    .auth-left { display: none; }
+    .auth-right { padding: 2rem 1.25rem; }
+    .auth-card { padding: 2rem 1.5rem; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Bag<span>Ease</span></a>
+  <a href="index.html" class="nav-back">← Back to Home</a>
+</nav>
+
+<div class="auth-wrapper">
+  <div class="auth-left">
+    <div class="panel-label">Get Started Free</div>
+    <h2 class="panel-title">Join 50,000+<br>smart travellers.</h2>
+    <p class="panel-body">Create your BagEase account in under 2 minutes and never haul luggage to a station again.</p>
+
+    <ul class="steps-mini">
+      <li><div class="step-badge">1</div><div class="step-mini-text"><strong>Fill your details</strong><span>Name, email & mobile number</span></div></li>
+      <li><div class="step-badge">2</div><div class="step-mini-text"><strong>Verify your number</strong><span>Quick OTP on your phone</span></div></li>
+      <li><div class="step-badge">3</div><div class="step-mini-text"><strong>Book your first pickup</strong><span>Get ₹100 off your first booking</span></div></li>
+    </ul>
+
+    <div class="testimonial-card">
+      <div class="testimonial-text">"I was sceptical at first, but BagEase completely changed how I travel for work. My bags were waiting at Chennai Central before my train even arrived!"</div>
+      <div class="testimonial-author">— Priya R., frequent rail traveller, Hyderabad</div>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <div class="auth-card-title">Create Account</div>
+        <div class="auth-card-sub">Already have an account? <a href="login.html">Log in →</a></div>
+      </div>
+
+      <form onsubmit="handleRegister(event)">
+        <div class="form-section">Personal Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" placeholder="Arjun" required>
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" placeholder="Sharma" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="arjun@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Mobile Number</label>
+          <input type="tel" id="phone" placeholder="+91 98765 43210" required>
+        </div>
+
+        <div class="form-section">Security</div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Min. 8 characters" oninput="checkStrength(this.value)" required>
+          <div class="password-strength"><div class="strength-fill" id="strength-bar"></div></div>
+          <div class="strength-label" id="strength-label">Enter a password</div>
+        </div>
+        <div class="form-group">
+          <label for="confirm">Confirm Password</label>
+          <input type="password" id="confirm" placeholder="Re-enter your password" required>
+        </div>
+
+        <div class="form-section">Travel Preferences</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">Home City</label>
+            <select id="city">
+              <option value="">Select city</option>
+              <option>Hyderabad</option><option>Mumbai</option><option>Delhi</option>
+              <option>Bengaluru</option><option>Chennai</option><option>Kolkata</option>
+              <option>Pune</option><option>Ahmedabad</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="station">Nearest Station</label>
+            <select id="station">
+              <option value="">Select station</option>
+              <option>Secunderabad</option><option>Hyderabad Deccan</option>
+              <option>Kacheguda</option><option>CST Mumbai</option>
+              <option>New Delhi</option><option>Chennai Central</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="terms-wrap">
+          <input type="checkbox" id="terms" required>
+          <div class="terms-text">I agree to BagEase's <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. I consent to receiving booking updates via SMS and email.</div>
+        </div>
+
+        <button type="submit" class="btn-submit">Create My Account →</button>
+      </form>
+
+      <div class="divider"><span>or sign up with</span></div>
+      <button class="btn-social">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+function checkStrength(val) {
+  const bar = document.getElementById('strength-bar');
+  const label = document.getElementById('strength-label');
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const levels = [
+    { w: '0%', c: 'transparent', t: 'Enter a password' },
+    { w: '25%', c: '#EF4444', t: 'Weak' },
+    { w: '50%', c: '#F97316', t: 'Fair' },
+    { w: '75%', c: '#EAB308', t: 'Good' },
+    { w: '100%', c: '#22C55E', t: 'Strong ✓' }
+  ];
+  bar.style.width = levels[score].w;
+  bar.style.background = levels[score].c;
+  label.textContent = levels[score].t;
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+  const p = document.getElementById('password').value;
+  const c = document.getElementById('confirm').value;
+  if (p !== c) { alert('Passwords do not match.'); return; }
+  const btn = e.target.querySelector('.btn-submit');
+  btn.textContent = 'Creating account…';
+  btn.disabled = true;
+  setTimeout(() => { window.location.href = 'login.html'; }, 1400);
+}
+</script>
+</body>
+</html>

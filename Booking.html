@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a Pickup — BagEase</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F5F0E8; --bg2: #EDE6D6;
+    --forest: #2D5016; --forest-mid: #3D6B20; --forest-light: #4E8829;
+    --amber: #D97706; --amber-light: #F59E0B; --amber-pale: #FEF3C7;
+    --charcoal: #1C1C1C; --warm-gray: #6B6355; --white: #FFFFFF;
+    --card-bg: #FFFDF8; --border: rgba(45,80,22,0.12); --input-border: rgba(45,80,22,0.2);
+    --red: #EF4444;
+  }
+  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--charcoal); min-height: 100vh; }
+
+  /* NAV */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 5%; border-bottom: 1px solid var(--border); background: var(--card-bg); position: sticky; top: 0; z-index: 50; }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: var(--charcoal); text-decoration: none; }
+  .nav-logo span { color: var(--amber); }
+  .nav-right { display: flex; align-items: center; gap: 1rem; }
+  .nav-link { font-size: 0.88rem; color: var(--warm-gray); text-decoration: none; transition: color 0.2s; }
+  .nav-link:hover { color: var(--forest); }
+
+  /* LAYOUT */
+  .page-wrapper { max-width: 1100px; margin: 0 auto; padding: 3rem 5% 5rem; }
+
+  /* PROGRESS */
+  .progress-header { margin-bottom: 3rem; }
+  .progress-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700; color: var(--charcoal); letter-spacing: -1px; margin-bottom: 0.5rem; }
+  .progress-sub { font-size: 0.95rem; color: var(--warm-gray); margin-bottom: 2rem; }
+
+  .stepper { display: flex; align-items: center; gap: 0; }
+  .step-item { display: flex; flex-direction: column; align-items: center; position: relative; flex: 1; }
+  .step-item:not(:last-child)::after { content: ''; position: absolute; top: 18px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+  .step-item.done:not(:last-child)::after { background: var(--forest); }
+  .step-circle { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border); background: var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 600; color: var(--warm-gray); z-index: 1; position: relative; transition: all 0.3s; }
+  .step-item.active .step-circle { border-color: var(--forest); background: var(--forest); color: var(--white); }
+  .step-item.done .step-circle { border-color: var(--forest); background: var(--forest); color: var(--white); }
+  .step-label { font-size: 0.75rem; color: var(--warm-gray); margin-top: 0.5rem; font-weight: 400; white-space: nowrap; }
+  .step-item.active .step-label { color: var(--forest); font-weight: 600; }
+  .step-item.done .step-label { color: var(--forest-mid); }
+
+  /* TWO-COL */
+  .booking-layout { display: grid; grid-template-columns: 1fr 360px; gap: 2rem; align-items: flex-start; }
+
+  /* FORM CARD */
+  .form-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 2.5rem; box-shadow: 0 4px 24px rgba(45,80,22,0.06); }
+  .form-card-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: var(--charcoal); letter-spacing: -0.5px; margin-bottom: 0.35rem; }
+  .form-card-sub { font-size: 0.88rem; color: var(--warm-gray); margin-bottom: 2rem; }
+  .form-section-title { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--amber); margin: 2rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  .form-section-title:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { margin-bottom: 1.1rem; }
+  label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--charcoal); margin-bottom: 0.5rem; }
+  input[type="text"], input[type="email"], input[type="tel"], input[type="date"], input[type="time"], input[type="number"], select, textarea {
+    width: 100%; padding: 0.85rem 1.1rem; border-radius: 12px; border: 1.5px solid var(--input-border);
+    background: var(--bg); color: var(--charcoal); font-family: 'Outfit', sans-serif; font-size: 0.95rem;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s; appearance: none; resize: vertical;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(45,80,22,0.08); }
+  input::placeholder, textarea::placeholder { color: rgba(107,99,85,0.5); }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6355' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+
+  /* BAG TYPE CARDS */
+  .bag-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.1rem; }
+  .bag-option { border: 2px solid var(--input-border); border-radius: 14px; padding: 1rem; cursor: pointer; text-align: center; transition: all 0.2s; }
+  .bag-option:hover { border-color: rgba(45,80,22,0.3); }
+  .bag-option.selected { border-color: var(--forest); background: rgba(45,80,22,0.05); }
+  .bag-option .bag-icon { font-size: 1.75rem; margin-bottom: 0.4rem; display: block; }
+  .bag-option .bag-name { font-size: 0.82rem; font-weight: 600; color: var(--charcoal); }
+  .bag-option .bag-price { font-size: 0.75rem; color: var(--warm-gray); margin-top: 2px; }
+  .bag-count { display: flex; align-items: center; gap: 0.75rem; }
+  .count-btn { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--input-border); background: var(--card-bg); color: var(--charcoal); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .count-btn:hover { border-color: var(--forest); color: var(--forest); }
+  .count-display { font-size: 1.1rem; font-weight: 600; min-width: 24px; text-align: center; }
+
+  /* PAYMENT */
+  .payment-methods { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.1rem; }
+  .pay-option { display: flex; align-items: center; gap: 1rem; border: 2px solid var(--input-border); border-radius: 14px; padding: 1rem 1.25rem; cursor: pointer; transition: all 0.2s; }
+  .pay-option:hover { border-color: rgba(45,80,22,0.3); }
+  .pay-option.selected { border-color: var(--forest); background: rgba(45,80,22,0.04); }
+  .pay-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--input-border); background: var(--card-bg); flex-shrink: 0; transition: all 0.2s; position: relative; }
+  .pay-option.selected .pay-radio { border-color: var(--forest); background: var(--forest); }
+  .pay-option.selected .pay-radio::after { content: ''; position: absolute; top: 3px; left: 3px; width: 8px; height: 8px; border-radius: 50%; background: var(--white); }
+  .pay-info strong { font-size: 0.9rem; font-weight: 600; display: block; }
+  .pay-info span { font-size: 0.8rem; color: var(--warm-gray); }
+  .pay-badge { margin-left: auto; font-size: 0.7rem; font-weight: 600; padding: 0.25rem 0.6rem; border-radius: 50px; }
+  .badge-green { background: rgba(34,197,94,0.12); color: #16A34A; }
+  .badge-amber { background: var(--amber-pale); color: var(--amber); }
+
+  /* NAV BUTTONS */
+  .form-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .btn-prev { background: transparent; border: 1.5px solid var(--input-border); color: var(--charcoal); padding: 0.8rem 1.75rem; border-radius: 50px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .btn-prev:hover { border-color: var(--forest); color: var(--forest); }
+  .btn-next { background: var(--forest); color: var(--white); border: none; padding: 0.9rem 2rem; border-radius: 50px; font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.25s; }
+  .btn-next:hover { background: var(--forest-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(45,80,22,0.25); }
+  .btn-confirm { background: var(--amber); color: var(--white); border: none; padding: 0.9rem 2rem; border-radius: 50px; font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.25s; }
+  .btn-confirm:hover { background: var(--amber-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(217,119,6,0.3); }
+
+  /* SUMMARY CARD */
+  .summary-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 2rem; box-shadow: 0 4px 24px rgba(45,80,22,0.06); position: sticky; top: 90px; }
+  .summary-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: var(--charcoal); margin-bottom: 1.5rem; }
+  .summary-section { margin-bottom: 1.5rem; }
+  .summary-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--amber); margin-bottom: 0.75rem; }
+  .summary-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem; gap: 0.5rem; }
+  .summary-key { font-size: 0.85rem; color: var(--warm-gray); }
+  .summary-val { font-size: 0.85rem; color: var(--charcoal); font-weight: 500; text-align: right; }
+  .summary-divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
+  .summary-total { display: flex; justify-content: space-between; align-items: center; }
+  .summary-total-label { font-size: 1rem; font-weight: 600; color: var(--charcoal); }
+  .summary-total-val { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 700; color: var(--forest); }
+  .promo-input { display: flex; gap: 0.5rem; margin-top: 1rem; }
+  .promo-input input { flex: 1; padding: 0.65rem 1rem; border-radius: 10px; border: 1.5px solid var(--input-border); background: var(--bg); font-family: 'Outfit', sans-serif; font-size: 0.875rem; outline: none; }
+  .promo-input input:focus { border-color: var(--forest); }
+  .btn-promo { padding: 0.65rem 1rem; border-radius: 10px; border: none; background: var(--forest); color: var(--white); font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .trust-badges { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+  .trust-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; color: var(--warm-gray); }
+
+  /* CONFIRMATION */
+  .confirm-screen { display: none; text-align: center; padding: 2rem; }
+  .confirm-screen.active { display: block; }
+  .confirm-icon { font-size: 4rem; margin-bottom: 1.25rem; }
+  .confirm-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700; color: var(--forest); margin-bottom: 0.75rem; }
+  .confirm-body { font-size: 1rem; color: var(--warm-gray); line-height: 1.7; margin-bottom: 2rem; }
+  .booking-id { display: inline-block; background: var(--amber-pale); border: 1px solid rgba(217,119,6,0.3); color: var(--amber); border-radius: 12px; padding: 0.6rem 1.25rem; font-size: 1rem; font-weight: 600; letter-spacing: 1px; margin-bottom: 2rem; }
+  .confirm-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-track { background: var(--forest); color: var(--white); padding: 0.85rem 2rem; border-radius: 50px; text-decoration: none; font-size: 0.95rem; font-weight: 600; }
+  .btn-home { background: transparent; border: 1.5px solid var(--input-border); color: var(--charcoal); padding: 0.85rem 2rem; border-radius: 50px; text-decoration: none; font-size: 0.95rem; font-weight: 500; }
+
+  /* STEPS VISIBILITY */
+  .step-content { display: none; }
+  .step-content.active { display: block; }
+
+  @media (max-width: 900px) {
+    .booking-layout { grid-template-columns: 1fr; }
+    .summary-card { position: static; }
+  }
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .bag-options { grid-template-columns: repeat(3, 1fr); }
+    .page-wrapper { padding: 2rem 1.25rem 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Bag<span>Ease</span></a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-link">← Home</a>
+    <a href="login.html" class="nav-link">Log In</a>
+  </div>
+</nav>
+
+<div class="page-wrapper">
+  <!-- PROGRESS -->
+  <div class="progress-header" id="booking-header">
+    <h1 class="progress-title">Book a Pickup</h1>
+    <p class="progress-sub">We'll collect your bags and deliver them to your departure station.</p>
+    <div class="stepper">
+      <div class="step-item active" id="si-1"><div class="step-circle">1</div><div class="step-label">Pickup Details</div></div>
+      <div class="step-item" id="si-2"><div class="step-circle">2</div><div class="step-label">Bags & Travel</div></div>
+      <div class="step-item" id="si-3"><div class="step-circle">3</div><div class="step-label">Review & Pay</div></div>
+    </div>
+  </div>
+
+  <div class="booking-layout" id="booking-layout">
+    <div>
+      <!-- STEP 1 -->
+      <div class="form-card step-content active" id="step-1">
+        <div class="form-card-title">Pickup Address</div>
+        <div class="form-card-sub">Where should we collect your bags?</div>
+
+        <div class="form-section-title">Your Address</div>
+        <div class="form-group">
+          <label>Full Address / Flat & Building Name</label>
+          <input type="text" id="address1" placeholder="e.g. Flat 4B, Sunrise Residency, MG Road" oninput="updateSummary()">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <select id="city" onchange="updateSummary()">
+              <option value="">Select city</option>
+              <option>Hyderabad</option><option>Mumbai</option><option>Delhi</option>
+              <option>Bengaluru</option><option>Chennai</option><option>Kolkata</option>
+              <option>Pune</option><option>Ahmedabad</option><option>Jaipur</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>PIN Code</label>
+            <input type="text" id="pin" placeholder="500001" maxlength="6" oninput="updateSummary()">
+          </div>
+        </div>
+
+        <div class="form-section-title">Pickup Schedule</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Pickup Date</label>
+            <input type="date" id="pickup-date" oninput="updateSummary()">
+          </div>
+          <div class="form-group">
+            <label>Pickup Time Window</label>
+            <select id="pickup-time" onchange="updateSummary()">
+              <option value="">Select window</option>
+              <option>06:00 – 08:00 AM</option>
+              <option>08:00 – 10:00 AM</option>
+              <option>10:00 AM – 12:00 PM</option>
+              <option>12:00 – 02:00 PM</option>
+              <option>02:00 – 04:00 PM</option>
+              <option>04:00 – 06:00 PM</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-section-title">Contact Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="contact-name" placeholder="Arjun Sharma" oninput="updateSummary()">
+          </div>
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" id="contact-phone" placeholder="+91 98765 43210" oninput="updateSummary()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Alternate Number (optional)</label>
+          <input type="tel" placeholder="+91 91234 56789">
+        </div>
+
+        <div class="form-nav">
+          <div></div>
+          <button class="btn-next" onclick="goToStep(2)">Next: Bags & Travel →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="form-card step-content" id="step-2">
+        <div class="form-card-title">Bags & Travel Info</div>
+        <div class="form-card-sub">Tell us about your bags and your journey.</div>
+
+        <div class="form-section-title">Bag Type</div>
+        <div class="bag-options" id="bag-options">
+          <div class="bag-option selected" onclick="selectBag(this, 'Cabin Bag', 199)">
+            <span class="bag-icon">🎒</span>
+            <div class="bag-name">Cabin Bag</div>
+            <div class="bag-price">₹199/bag</div>
+          </div>
+          <div class="bag-option" onclick="selectBag(this, 'Check-in', 299)">
+            <span class="bag-icon">🧳</span>
+            <div class="bag-name">Check-in</div>
+            <div class="bag-price">₹299/bag</div>
+          </div>
+          <div class="bag-option" onclick="selectBag(this, 'Large Suitcase', 399)">
+            <span class="bag-icon">📦</span>
+            <div class="bag-name">Large</div>
+            <div class="bag-price">₹399/bag</div>
+          </div>
+        </div>
+
+        <div class="form-section-title">Number of Bags</div>
+        <div class="form-group">
+          <label>How many bags?</label>
+          <div class="bag-count">
+            <button type="button" class="count-btn" onclick="changeBags(-1)">−</button>
+            <div class="count-display" id="bag-count-display">1</div>
+            <button type="button" class="count-btn" onclick="changeBags(1)">+</button>
+            <span style="font-size:0.85rem;color:var(--warm-gray);margin-left:0.5rem">(max 5)</span>
+          </div>
+        </div>
+
+        <div class="form-section-title">Travel Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Departure Station</label>
+            <select id="station" onchange="updateSummary()">
+              <option value="">Select station</option>
+              <option>Secunderabad</option><option>Hyderabad Deccan</option>
+              <option>Kacheguda</option><option>CST Mumbai</option>
+              <option>Dadar</option><option>New Delhi</option>
+              <option>Hazrat Nizamuddin</option><option>Chennai Central</option>
+              <option>Bengaluru City</option><option>Howrah</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Train Number / Name</label>
+            <input type="text" id="train" placeholder="e.g. 12723 Telangana Express" oninput="updateSummary()">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Travel Date</label>
+            <input type="date" id="travel-date" oninput="updateSummary()">
+          </div>
+          <div class="form-group">
+            <label>Train Departure Time</label>
+            <input type="time" id="train-time" oninput="updateSummary()">
+          </div>
+        </div>
+
+        <div class="form-section-title">Special Instructions</div>
+        <div class="form-group">
+          <label>Notes for our agent (optional)</label>
+          <textarea rows="3" placeholder="e.g. Please call before arriving. The building has a security gate."></textarea>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-prev" onclick="goToStep(1)">← Back</button>
+          <button class="btn-next" onclick="goToStep(3)">Next: Review & Pay →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="form-card step-content" id="step-3">
+        <div class="form-card-title">Review & Payment</div>
+        <div class="form-card-sub">Check your booking details and choose how to pay.</div>
+
+        <!-- ORDER REVIEW -->
+        <div class="form-section-title">Booking Summary</div>
+        <div id="review-details" style="background:var(--bg2);border-radius:14px;padding:1.25rem;margin-bottom:0.5rem;">
+          <div class="summary-row"><span class="summary-key">Pickup Address</span><span class="summary-val" id="review-address">—</span></div>
+          <div class="summary-row"><span class="summary-key">Pickup Date & Time</span><span class="summary-val" id="review-pickup">—</span></div>
+          <div class="summary-row"><span class="summary-key">Station</span><span class="summary-val" id="review-station">—</span></div>
+          <div class="summary-row"><span class="summary-key">Train</span><span class="summary-val" id="review-train">—</span></div>
+          <div class="summary-row"><span class="summary-key">Bags</span><span class="summary-val" id="review-bags">—</span></div>
+        </div>
+
+        <div class="form-section-title">Payment Method</div>
+        <div class="payment-methods">
+          <div class="pay-option selected" onclick="selectPay(this)">
+            <div class="pay-radio"></div>
+            <div class="pay-info"><strong>UPI</strong><span>GPay, PhonePe, Paytm, BHIM</span></div>
+            <span class="pay-badge badge-green">Recommended</span>
+          </div>
+          <div class="pay-option" onclick="selectPay(this)">
+            <div class="pay-radio"></div>
+            <div class="pay-info"><strong>Credit / Debit Card</strong><span>Visa, Mastercard, RuPay</span></div>
+          </div>
+          <div class="pay-option" onclick="selectPay(this)">
+            <div class="pay-radio"></div>
+            <div class="pay-info"><strong>Net Banking</strong><span>All major Indian banks</span></div>
+          </div>
+          <div class="pay-option" onclick="selectPay(this)">
+            <div class="pay-radio"></div>
+            <div class="pay-info"><strong>Pay on Pickup</strong><span>Cash or card at collection</span></div>
+            <span class="pay-badge badge-amber">+₹20 fee</span>
+          </div>
+        </div>
+
+        <div id="upi-field" class="form-group" style="margin-top:0.5rem">
+          <label>UPI ID</label>
+          <input type="text" placeholder="yourname@upi">
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-prev" onclick="goToStep(2)">← Back</button>
+          <button class="btn-confirm" onclick="confirmBooking()">Confirm & Pay ₹<span id="final-price">299</span> →</button>
+        </div>
+      </div>
+
+      <!-- CONFIRMATION -->
+      <div class="confirm-screen form-card" id="confirm-screen">
+        <div class="confirm-icon">✅</div>
+        <div class="confirm-title">Booking Confirmed!</div>
+        <p class="confirm-body">Your pickup has been scheduled. Our agent will collect your bags and deliver them safely to your departure station well before your train.</p>
+        <div class="booking-id" id="booking-id-display">Booking ID: BE-2025-XXXX</div>
+        <p style="font-size:0.88rem;color:var(--warm-gray);margin-bottom:1.5rem">You'll receive a confirmation SMS and email shortly. Track your bags live from the app.</p>
+        <div class="confirm-actions">
+          <a href="#" class="btn-track">Track My Bags →</a>
+          <a href="index.html" class="btn-home">Back to Home</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY SIDEBAR -->
+    <div class="summary-card" id="summary-sidebar">
+      <div class="summary-title">Order Summary</div>
+
+      <div class="summary-section">
+        <div class="summary-label">Pickup</div>
+        <div class="summary-row"><span class="summary-key">City</span><span class="summary-val" id="s-city">—</span></div>
+        <div class="summary-row"><span class="summary-key">Date</span><span class="summary-val" id="s-date">—</span></div>
+        <div class="summary-row"><span class="summary-key">Time</span><span class="summary-val" id="s-time">—</span></div>
+      </div>
+
+      <div class="summary-section">
+        <div class="summary-label">Delivery</div>
+        <div class="summary-row"><span class="summary-key">Station</span><span class="summary-val" id="s-station">—</span></div>
+        <div class="summary-row"><span class="summary-key">Train</span><span class="summary-val" id="s-train">—</span></div>
+      </div>
+
+      <div class="summary-section">
+        <div class="summary-label">Bags</div>
+        <div class="summary-row"><span class="summary-key" id="s-bag-type">Cabin Bag</span><span class="summary-val" id="s-bag-count">1 bag</span></div>
+        <div class="summary-row"><span class="summary-key">Unit price</span><span class="summary-val" id="s-unit-price">₹199</span></div>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-row"><span class="summary-key">Subtotal</span><span class="summary-val" id="s-subtotal">₹199</span></div>
+      <div class="summary-row"><span class="summary-key">IoT Sensor (incl.)</span><span class="summary-val" style="color:var(--forest)">Free</span></div>
+      <div class="summary-row"><span class="summary-key">GST (18%)</span><span class="summary-val" id="s-gst">₹36</span></div>
+
+      <div class="summary-divider"></div>
+      <div class="summary-total">
+        <div class="summary-total-label">Total</div>
+        <div class="summary-total-val" id="s-total">₹235</div>
+      </div>
+
+      <div class="promo-input">
+        <input type="text" placeholder="Promo code" id="promo-code">
+        <button class="btn-promo" onclick="applyPromo()">Apply</button>
+      </div>
+      <div id="promo-msg" style="font-size:0.8rem;margin-top:0.4rem;display:none"></div>
+
+      <div class="trust-badges">
+        <div class="trust-item">🔒 Secured by 256-bit SSL encryption</div>
+        <div class="trust-item">✅ 99% On-Time Delivery Guarantee</div>
+        <div class="trust-item">↩ Full refund if we're late</div>
+        <div class="trust-item">📞 24/7 Support: 1800-XXX-EASE</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let bagCount = 1;
+  let bagPrice = 199;
+  let bagType = 'Cabin Bag';
+  let promoApplied = false;
+
+  function goToStep(n) {
+    document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-' + n).classList.add('active');
+
+    for (let i = 1; i <= 3; i++) {
+      const si = document.getElementById('si-' + i);
+      si.classList.remove('active', 'done');
+      if (i < n) si.classList.add('done');
+      if (i === n) si.classList.add('active');
+    }
+
+    if (n === 3) populateReview();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function selectBag(el, type, price) {
+    document.querySelectorAll('.bag-option').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    bagType = type;
+    bagPrice = price;
+    updateSummary();
+  }
+
+  function changeBags(d) {
+    bagCount = Math.max(1, Math.min(5, bagCount + d));
+    document.getElementById('bag-count-display').textContent = bagCount;
+    updateSummary();
+  }
+
+  function selectPay(el) {
+    document.querySelectorAll('.pay-option').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function updateSummary() {
+    const city = document.getElementById('city')?.value || '—';
+    const date = document.getElementById('pickup-date')?.value || '';
+    const time = document.getElementById('pickup-time')?.value || '—';
+    const station = document.getElementById('station')?.value || '—';
+    const train = document.getElementById('train')?.value || '—';
+
+    document.getElementById('s-city').textContent = city || '—';
+    document.getElementById('s-date').textContent = date ? new Date(date).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) : '—';
+    document.getElementById('s-time').textContent = time || '—';
+    document.getElementById('s-station').textContent = station || '—';
+    document.getElementById('s-train').textContent = train || '—';
+    document.getElementById('s-bag-type').textContent = bagType;
+    document.getElementById('s-bag-count').textContent = bagCount + ' bag' + (bagCount > 1 ? 's' : '');
+    document.getElementById('s-unit-price').textContent = '₹' + bagPrice;
+
+    const subtotal = bagPrice * bagCount;
+    const gst = Math.round(subtotal * 0.18);
+    const total = promoApplied ? Math.round((subtotal + gst) * 0.9) : subtotal + gst;
+
+    document.getElementById('s-subtotal').textContent = '₹' + subtotal;
+    document.getElementById('s-gst').textContent = '₹' + gst;
+    document.getElementById('s-total').textContent = '₹' + total;
+    document.getElementById('final-price').textContent = total;
+  }
+
+  function populateReview() {
+    const city = document.getElementById('city')?.value || '—';
+    const addr = document.getElementById('address1')?.value || '';
+    const date = document.getElementById('pickup-date')?.value || '';
+    const time = document.getElementById('pickup-time')?.value || '—';
+    const station = document.getElementById('station')?.value || '—';
+    const train = document.getElementById('train')?.value || '—';
+    const tdate = document.getElementById('travel-date')?.value || '';
+
+    document.getElementById('review-address').textContent = (addr ? addr + ', ' : '') + city;
+    document.getElementById('review-pickup').textContent = (date ? new Date(date).toLocaleDateString('en-IN', {day:'numeric',month:'short'}) : '—') + ' · ' + time;
+    document.getElementById('review-station').textContent = station;
+    document.getElementById('review-train').textContent = train || '—';
+    document.getElementById('review-bags').textContent = bagCount + ' × ' + bagType + ' (₹' + (bagPrice * bagCount) + ')';
+  }
+
+  function applyPromo() {
+    const code = document.getElementById('promo-code').value.trim().toUpperCase();
+    const msg = document.getElementById('promo-msg');
+    if (code === 'EASE100') {
+      promoApplied = true;
+      msg.style.display = 'block';
+      msg.style.color = '#16A34A';
+      msg.textContent = '✓ Promo applied — 10% off!';
+      updateSummary();
+    } else {
+      msg.style.display = 'block';
+      msg.style.color = 'var(--red)';
+      msg.textContent = 'Invalid promo code.';
+    }
+  }
+
+  function confirmBooking() {
+    const btn = document.querySelector('.btn-confirm');
+    btn.textContent = 'Processing…';
+    btn.disabled = true;
+    setTimeout(() => {
+      document.getElementById('step-3').classList.remove('active');
+      document.getElementById('booking-header').style.display = 'none';
+      document.getElementById('summary-sidebar').style.display = 'none';
+      document.getElementById('confirm-screen').classList.add('active');
+      const id = 'BE-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 9000 + 1000);
+      document.getElementById('booking-id-display').textContent = 'Booking ID: ' + id;
+    }, 1600);
+  }
+
+  // Init
+  document.addEventListener('DOMContentLoaded', () => {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('pickup-date').min = today;
+    document.getElementById('travel-date').min = today;
+    updateSummary();
+  });
+</script>
+</body>
+</html>
